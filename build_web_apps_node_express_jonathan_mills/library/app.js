@@ -14,6 +14,11 @@ app.use(morgan('combined'));
 // Set up Express, serving js and css from the public/ folder.
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Set up Express to find Bootstrap and Jquery from the node modules
+app.use('/css', express.static(path.join(__dirname, 'node_modules', 'bootstrap', 'dist', 'css')));
+app.use('/js',  express.static(path.join(__dirname, 'node_modules', 'bootstrap', 'dist', 'js')));
+app.use('/js',  express.static(path.join(__dirname, 'node_modules', 'jquery',    'dist')));
+
 // Route for / to index.html
 app.get('/', function (req, res) {
 	// res.send("Hello from my library app");
