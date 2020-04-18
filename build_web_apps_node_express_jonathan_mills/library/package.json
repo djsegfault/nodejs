@@ -9,9 +9,11 @@
   "author": "David Kramer",
   "license": "ISC",
   "dependencies": {
+    "bootstrap": "4.4.1",
     "chalk": "4.0.0",
     "debug": "4.1.1",
     "express": "^4.17.1",
+    "jquery": "3.5.0",
     "morgan": "1.10.0"
   }
 }

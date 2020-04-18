@@ -11,7 +11,10 @@ var app = express();
 // Set up Morgan for access logging
 app.use(morgan('combined'));
 
-// Route for / to anonymous handler function 
+// Set up Express, serving js and css from the public/ folder.
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Route for / to index.html
 app.get('/', function (req, res) {
 	// res.send("Hello from my library app");
 	res.sendFile(path.join(__dirname, 'views', 'index.html'));
