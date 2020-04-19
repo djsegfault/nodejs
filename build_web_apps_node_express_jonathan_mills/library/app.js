@@ -4,6 +4,7 @@ const chalk = require('chalk');
 const debug = require('debug')('app');
 const morgan = require('morgan');
 const path = require('path');
+const port = process.env.PORT || 3000; 
 
 // Globals
 const app = express();
@@ -29,7 +30,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-app.listen(3000, () => {
+app.listen(port, () => {
   // Old school way
   // console.log('Listening on port ' + chalk.green('3000'););
 
@@ -39,5 +40,5 @@ app.listen(3000, () => {
   // debug mode, only shows up when you're debugging
   // To run with debugging:
   // DEBUG=* node app.js
-  debug(`Listening on port ${chalk.green('3000')}.`);
+  debug(`Listening on port ${chalk.green(port)} for requests.`);
 });
