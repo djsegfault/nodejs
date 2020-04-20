@@ -18,7 +18,8 @@
     "express": "^4.17.1",
     "jquery": "3.5.0",
     "morgan": "1.10.0",
-    "nodemon": "2.0.3"
+    "nodemon": "2.0.3",
+    "pug": "2.0.4"
   },
   "devDependencies": {
     "eslint": "6.8.0",
@@ -27,9 +28,11 @@
   },
   "nodemonConfig": {
     "verbose": true,
-    "restartable":"rs",
-    "ignore":["node_modules/**/node_modules"],
-    "delay":"2500",
+    "restartable": "rs",
+    "ignore": [
+      "node_modules/**/node_modules"
+    ],
+    "delay": "2500",
     "env": {
       "NODE_ENV": "devel",
       "PORT": "4000"

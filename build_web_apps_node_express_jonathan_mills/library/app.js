@@ -15,6 +15,10 @@ app.use(morgan('combined'));
 // Set up Express, serving js and css from the public/ folder.
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Set up templating engine and template directory
+app.set('views', './src/views');
+app.set('view engine', 'pug');
+
 // Set up Express to find Bootstrap and Jquery from the node modules
 app.use('/css', express.static(path.join(__dirname, 'node_modules', 'bootstrap', 'dist', 'css')));
 app.use('/js', express.static(path.join(__dirname, 'node_modules', 'bootstrap', 'dist', 'js')));
@@ -26,8 +30,17 @@ app.use('/js', express.static(path.join(__dirname, 'node_modules', 'jquery', 'di
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 }); */
 app.get('/', (req, res) => {
-  // res.send("Hello from my library app");
-  res.sendFile(path.join(__dirname, 'views', 'index.html'));
+  // Static text
+  //res.send("Hello from my library app");
+
+  // Static files under the views directory
+  //res.sendFile(path.join(__dirname, 'views', 'index.html'));
+
+  // Rendering with pug, looking for src/views/index.pug
+  res.render('index', {
+    title: "David's Library",
+    list: ['a','b']
+  });
 });
 
 app.listen(port, () => {
