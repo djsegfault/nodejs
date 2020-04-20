@@ -56,7 +56,7 @@ const books = [
 // Setting up routes
 bookRouter.route('/')
     .get((req, res) => {
-        res.render('books', {
+        res.render('bookListView', {
             title: "David's Library",
             nav: [
                 { link: '/books', title: 'Books' },
@@ -64,6 +64,23 @@ bookRouter.route('/')
             ],
             books, // books is a shorthand for books: books (send the object books with a key of books)
         });
+    });
+
+bookRouter.route('/:id')
+    .get((req, res) => {
+        // const id = req.params.id;
+        const { id } = req.params; // Pull the id property out of req.params
+        res.render('bookView', {
+            title: "David's Library",
+            nav: [
+                { link: '/books', title: 'Books' },
+                { link: '/authors', title: 'Authors' },
+            ],
+            book: books[id],
+            id,
+        }
+        );
+
     });
 
 module.exports = bookRouter;
