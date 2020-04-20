@@ -4,6 +4,10 @@ const chalk = require('chalk');
 const debug = require('debug')('app');
 const morgan = require('morgan');
 const path = require('path');
+const pug = require('pug');
+const ejs = require('ejs');
+
+// Constants
 const port = process.env.PORT || 3000; 
 
 // Globals
@@ -17,7 +21,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Set up templating engine and template directory
 app.set('views', './src/views');
-app.set('view engine', 'pug');
+// app.set('view engine', 'pug');
+app.set('view engine', 'ejs');
 
 // Set up Express to find Bootstrap and Jquery from the node modules
 app.use('/css', express.static(path.join(__dirname, 'node_modules', 'bootstrap', 'dist', 'css')));
