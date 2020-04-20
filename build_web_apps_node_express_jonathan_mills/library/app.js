@@ -4,14 +4,11 @@ const chalk = require('chalk');
 const debug = require('debug')('app');
 const morgan = require('morgan');
 const path = require('path');
-// const pug = require('pug');
-// const ejs = require('ejs');
-
-// Constants
-const port = process.env.PORT || 3000;
 
 // Globals
+const port = process.env.PORT || 3000;
 const app = express();
+const bookRouter = express.Router;
 
 // Set up Morgan for access logging
 app.use(morgan('combined'));
@@ -29,6 +26,14 @@ app.use('/css', express.static(path.join(__dirname, 'node_modules', 'bootstrap',
 app.use('/js', express.static(path.join(__dirname, 'node_modules', 'bootstrap', 'dist', 'js')));
 app.use('/js', express.static(path.join(__dirname, 'node_modules', 'jquery', 'dist')));
 
+
+// Setting up routes
+bookRouter.route('/')
+  .get((req, res) => {
+    res.send('Hello books');
+  });
+app.use('/books', bookRouter);
+
 // Route for / to index.html
 /* app.get('/', function (req, res) {
   // res.send("Hello from my library app");
@@ -44,7 +49,10 @@ app.use('/js', express.static(path.join(__dirname, 'node_modules', 'jquery', 'di
 app.get('/', (req, res) => {
   res.render('index', {
     title: "David's Library",
-    nav: ['Books', 'Authors'],
+    nav: [
+      { link: '/books', title: 'Books' },
+      { link: '/authors', title: 'Authors' },
+    ],
   });
 });
 
