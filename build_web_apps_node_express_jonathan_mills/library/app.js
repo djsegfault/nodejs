@@ -4,11 +4,11 @@ const chalk = require('chalk');
 const debug = require('debug')('app');
 const morgan = require('morgan');
 const path = require('path');
-const pug = require('pug');
-const ejs = require('ejs');
+// const pug = require('pug');
+// const ejs = require('ejs');
 
 // Constants
-const port = process.env.PORT || 3000; 
+const port = process.env.PORT || 3000;
 
 // Globals
 const app = express();
@@ -33,8 +33,6 @@ app.use('/js', express.static(path.join(__dirname, 'node_modules', 'jquery', 'di
 /* app.get('/', function (req, res) {
   // res.send("Hello from my library app");
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
-}); */
-app.get('/', (req, res) => {
   // Static text
   //res.send("Hello from my library app");
 
@@ -42,9 +40,11 @@ app.get('/', (req, res) => {
   //res.sendFile(path.join(__dirname, 'views', 'index.html'));
 
   // Rendering with pug, looking for src/views/index.pug
+}); */
+app.get('/', (req, res) => {
   res.render('index', {
     title: "David's Library",
-    list: ['a','b']
+    nav: ['Books', 'Authors'],
   });
 });
 
