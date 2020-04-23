@@ -110,10 +110,11 @@ function router(nav, sqlConfig) {
     bookRouter.route('/:id')
         .get((req, res) => {
             const { id } = req.params; // Pull the id property out of req.params
+            console.log(`looking for ${id}`);
             var book = {};
 
             const sqlConnection = sql.createConnection(sqlConfig);
-            sqlConnection.query('select id, title, author from books where id=' + sql.escape(id), (error, results, fields) => {
+            sqlConnection.query('select id, title, author from books where id=?',[parseInt(id, 10)], (error, results, fields) => {
                 if (error) {
                     return console.error(`Error ${error} querying database`);
                 }
@@ -129,6 +130,7 @@ function router(nav, sqlConfig) {
                     title: results[0].title,
                     author: results[0].author
                 };
+                    console.log(book);
 
                 sqlConnection.end((error) => {
                     if (error) {
