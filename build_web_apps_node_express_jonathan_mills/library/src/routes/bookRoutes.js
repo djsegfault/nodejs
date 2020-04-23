@@ -11,8 +11,11 @@ function router(nav, sqlConnection) {
     }
 
     console.log("Dynamic books");
-    sqlConnection.connect(function (err, result) {
-        //if (err) throw err;
+    sqlConnection.connect((error, result) => {
+        if (error) {
+            console.log(`Error ${error} connecting to database`);
+            return;
+        }
         console.log("Connected to database!");
 
         sqlConnection.query('select id, title, author from books order by id', function (error, results, fields) {
@@ -33,6 +36,14 @@ function router(nav, sqlConnection) {
         });
     });
     console.log("Out of connect");
+    sqlConnection.end((error) => {
+        if (error) {
+            console.log(`Error ${error} disconnecting to database`);
+            return;
+        }
+        console.log("Disconnected from the database");
+      
+    }
     
 
 
