@@ -8,39 +8,25 @@ const sqlConnection = sql.createConnection({
     password: 'nodejs',
     database: 'PSLibrary'
 });
-
-sqlConnection.connect(function (error) {
+console.log("Connected to database");
+sqlConnection.query("select id, title, author from books order by id", (error, result, fields) => {
     if (error) {
-        console.log(`Error ${error} creating connection to database`);
-        return;
+        return console.error(`Error ${error} connecting to database`);
     }
-    sqlConnection.query("select id, title, author from books order by id", function (error, result, fields) {
-        if (error) {
-            console.log(`Error ${error} connecting to database`);
-            return;
-        }
-        // console.log(result);
+    for (var i = 0; i < result.length; i++) {
+        var row = result[i];
+        console.log(`${i}:${row.id}:${row.author}:${row.title}`);
+    }
+    console.log("Out of loop");
 
-        for (var i = 0; i < result.length; i++) {
-            var row = result[i];
-            console.log(row.id);
-            console.log(row.author);
-            console.log(row.title);
-            console.log('-------');
-        }
-        console.log("Out of loop");
-
-    });
-    console.log("Out of query");
-
-    console.log("Out of connect");
-    sqlConnection.end((error) => {
-        if (error) {
-            console.log(`Error ${error} disconnecting to database`);
-            return;
-        }
-        console.log("Disconnected from the database");
-
-    });
 });
-console.log("Out of connect");
+console.log("Out of query");
+
+sqlConnection.end((error) => {
+    if (error) {
+        return console.error(`Error ${error} disconnecting to database`);
+    }
+    console.log("Disconnected from the database");
+
+});
+console.log("Done");

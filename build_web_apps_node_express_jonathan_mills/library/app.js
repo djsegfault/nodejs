@@ -7,14 +7,6 @@ const path = require('path');
 const sql = require('mysql');
 
 
-// Set up database connection
-const sqlConnection = sql.createConnection({
-  host: 'localhost',
-  user: 'nodejs',
-  password: 'nodejs',
-  database: 'PSLibrary'
-});
-
 
 
 // Globals
@@ -24,9 +16,15 @@ const nav = [
   { link: '/books', title: 'Books' },
   { link: '/authors', title: 'Authors' },
 ];
+const sqlConfig = {
+  host: 'localhost',
+  user: 'nodejs',
+  password: 'nodejs',
+  database: 'PSLibrary'
+};
 
 
-const bookRouter = require('./src/routes/bookRoutes')(nav, sqlConnection);
+const bookRouter = require('./src/routes/bookRoutes')(nav, sqlConfig);
 
 // Set up Morgan for access logging
 app.use(morgan('combined'));
