@@ -74,14 +74,21 @@ function router(nav, sqlConfig) {
                     return console.error(`Error ${error} querying database`);
                 }
                 console.log(`There are ${results.length} books`);
-                for (var i = 0; i < results.length; i++) {
+                results.forEach(row => {
+                    books[row.id] = {
+                        title: row.title,
+                        author: row.author
+                    };                    
+                });
+
+                /* for (var i = 0; i < results.length; i++) {
                     var row = results[i];
                     books[row.id] = {
                         title: row.title,
                         author: row.author
                     };
                 }
-                // console.log(books);
+ */                // console.log(books);
 
                 sqlConnection.end((error) => {
                     if (error) {
