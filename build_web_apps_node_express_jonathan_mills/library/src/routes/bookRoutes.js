@@ -1,63 +1,99 @@
 const express = require('express');
+const sql = require('mysql');
 const bookRouter = express.Router();
+var books = [];
 
-function router(nav) {
+function router(nav, sqlConnection) {
 
     console.log(`Nav is '${nav.length}' long`);
     for (let i = 0; i < nav.length; i++) {
         console.log(`nav[${i}]='${nav[i].link}:${nav[i].title}`)
     }
 
-    const books = [
-        {
-            title: 'War and Peace',
-            genre: 'Historical Fiction',
-            author: 'Lev Nikolayevich Tolstoy',
-            read: false
-        },
-        {
-            title: 'Les Misérables',
-            genre: 'Historical Fiction',
-            author: 'Victor Hugo',
-            read: false
-        },
-        {
-            title: 'The Time Machine',
-            genre: 'Science Fiction',
-            author: 'H. G. Wells',
-            read: false
-        },
-        {
-            title: 'A Journey into the Center of the Earth',
-            genre: 'Science Fiction',
-            author: 'Jules Verne',
-            read: false
-        },
-        {
-            title: 'The Dark World',
-            genre: 'Fantasy',
-            author: 'Henry Kuttner',
-            read: false
-        },
-        {
-            title: 'The Wind in the Willows',
-            genre: 'Fantasy',
-            author: 'Kenneth Grahame',
-            read: false
-        },
-        {
-            title: 'Life On The Mississippi',
-            genre: 'History',
-            author: 'Mark Twain',
-            read: false
-        },
-        {
-            title: 'Childhood',
-            genre: 'Biography',
-            author: 'Lev Nikolayevich Tolstoy',
-            read: false
-        }];
+    console.log("Dynamic books");
+    sqlConnection.connect(function (err, result) {
+        //if (err) throw err;
+        console.log("Connected to database!");
 
+        sqlConnection.query('select id, title, author from books order by id', function (error, results, fields) {
+            //if (error) throw error;
+            console.log(`There are ${results.length} books`);
+            for (var i = 0; i < results.length; i++) {
+                var row = results[i];
+                books[row.id] = {
+                    title: row.title,
+                    author: row.author
+                };
+            }
+            console.log("Out of loop");
+            console.log("books 1 V");
+            console.log(books);
+            console.log("books 1 ^"); 
+            sqlConnection.end();
+        });
+    });
+    console.log("Out of connect");
+    
+
+
+
+    /* 
+            console.log("Static books");
+            books = [
+                {
+                    title: 'War and Peace',
+                    genre: 'Historical Fiction',
+                    author: 'Lev Nikolayevich Tolstoy',
+                    read: false
+                },
+                {
+                    title: 'Les Misérables',
+                    genre: 'Historical Fiction',
+                    author: 'Victor Hugo',
+                    read: false
+                },
+                {
+                    title: 'The Time Machine',
+                    genre: 'Science Fiction',
+                    author: 'H. G. Wells',
+                    read: false
+                },
+                {
+                    title: 'A Journey into the Center of the Earth',
+                    genre: 'Science Fiction',
+                    author: 'Jules Verne',
+                    read: false
+                },
+                {
+                    title: 'The Dark World',
+                    genre: 'Fantasy',
+                    author: 'Henry Kuttner',
+                    read: false
+                },
+                {
+                    title: 'The Wind in the Willows',
+                    genre: 'Fantasy',
+                    author: 'Kenneth Grahame',
+                    read: false
+                },
+                {
+                    title: 'Life On The Mississippi',
+                    genre: 'History',
+                    author: 'Mark Twain',
+                    read: false
+                },
+                {
+                    title: 'Childhood',
+                    genre: 'Biography',
+                    author: 'Lev Nikolayevich Tolstoy',
+                    read: false
+                }];
+        
+     */
+
+    console.log("books 2 V");
+    console.log(books);
+    console.log("books 2^");
 
     // Setting up routes
     bookRouter.route('/')
@@ -73,6 +109,7 @@ function router(nav) {
         .get((req, res) => {
             // const id = req.params.id;
             const { id } = req.params; // Pull the id property out of req.params
+            console.log(`bookRoutes:${id}:${books[id]}`);
             res.render('bookView', {
                 title: "David's Library",
                 nav,
@@ -82,8 +119,8 @@ function router(nav) {
             );
 
         });
-    
-    return bookRouter; 
+
+    return bookRouter;
 }
 
 module.exports = router;

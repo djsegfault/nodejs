@@ -4,6 +4,18 @@ const chalk = require('chalk');
 const debug = require('debug')('app');
 const morgan = require('morgan');
 const path = require('path');
+const sql = require('mysql');
+
+
+// Set up database connection
+const sqlConnection = sql.createConnection({
+  host: 'localhost',
+  user: 'nodejs',
+  password: 'nodejs',
+  database: 'PSLibrary'
+});
+
+
 
 // Globals
 const port = process.env.PORT || 3000;
@@ -13,7 +25,8 @@ const nav = [
   { link: '/authors', title: 'Authors' },
 ];
 
-const bookRouter = require('./src/routes/bookRoutes')(nav);
+
+const bookRouter = require('./src/routes/bookRoutes')(nav, sqlConnection);
 
 // Set up Morgan for access logging
 app.use(morgan('combined'));
@@ -31,7 +44,7 @@ app.use('/css', express.static(path.join(__dirname, 'node_modules', 'bootstrap',
 app.use('/js', express.static(path.join(__dirname, 'node_modules', 'bootstrap', 'dist', 'js')));
 app.use('/js', express.static(path.join(__dirname, 'node_modules', 'jquery', 'dist')));
 
-
+// Set up routes
 app.use('/books', bookRouter);
 
 bookRouter.route('/single')
