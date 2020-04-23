@@ -8,7 +8,12 @@ const path = require('path');
 // Globals
 const port = process.env.PORT || 3000;
 const app = express();
-const bookRouter = require('./src/routes/bookRoutes');
+const nav = [
+  { link: '/books', title: 'Books' },
+  { link: '/authors', title: 'Authors' },
+];
+
+const bookRouter = require('./src/routes/bookRoutes')(nav);
 
 // Set up Morgan for access logging
 app.use(morgan('combined'));
@@ -50,10 +55,7 @@ app.use('/books', bookRouter);
 app.get('/', (req, res) => {
   res.render('index', {
     title: "David's Library",
-    nav: [
-      { link: '/books', title: 'Books' },
-      { link: '/authors', title: 'Authors' },
-    ],
+    nav,
   });
 });
 
