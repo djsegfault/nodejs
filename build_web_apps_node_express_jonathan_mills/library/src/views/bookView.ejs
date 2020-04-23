@@ -29,13 +29,12 @@
                 <a href="/" class="navbar-brand">Home [<%=nav.length%>] bookView</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
-                <ul class="nav navbar-nav">
-                    <% for( let i = 0; i < nav.length; i++ ) { %>
+                <ul class="nav navbar-nav"><% nav.forEach(navLink => { %>
                     <li>
-                        <a href="<%=nav[i].link%>"><%=nav[i].title%></a>
+                        <a href="<%=navLink.link%>"><%=navLink.title%></a>
                     </li>
 
-                    <% } %>
+                    <% }); %>
                 </ul>
                 <ul class="nav navbar-right navbar-nav">
                     <li class="dropdown">

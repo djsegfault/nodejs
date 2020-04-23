@@ -7,9 +7,9 @@ function router(nav, sqlConfig) {
 
 
     console.log(`Nav is '${nav.length}' long`);
-    for (let i = 0; i < nav.length; i++) {
-        console.log(`nav[${i}]='${nav[i].link}:${nav[i].title}`)
-    }
+    nav.forEach(navLink => {
+        console.log(`Nav Link: ${navLink.link}:${navLink.title}`)
+    });
 
     /* 
            console.log("Static books");
@@ -80,15 +80,6 @@ function router(nav, sqlConfig) {
                         author: row.author
                     };                    
                 });
-
-                /* for (var i = 0; i < results.length; i++) {
-                    var row = results[i];
-                    books[row.id] = {
-                        title: row.title,
-                        author: row.author
-                    };
-                }
- */                // console.log(books);
 
                 sqlConnection.end((error) => {
                     if (error) {
