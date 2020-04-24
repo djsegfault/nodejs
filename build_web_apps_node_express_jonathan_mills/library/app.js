@@ -22,9 +22,14 @@ const sqlConfig = {
   password: 'nodejs',
   database: 'PSLibrary'
 };
+const mongoConfig = {
+  url: 'mongodb://localhost:27017',
+  database: 'libraryApp',
+};
 
 
-const bookRouter = require('./src/routes/bookRoutes')(nav, sqlConfig);
+const bookRouter = require('./src/routes/bookRoutes')(nav, mongoConfig);
+const adminRouter = require('./src/routes/adminRoutes')(nav, mongoConfig);
 
 // Set up Morgan for access logging
 app.use(morgan('combined'));
@@ -44,6 +49,7 @@ app.use('/js', express.static(path.join(__dirname, 'node_modules', 'jquery', 'di
 
 // Set up routes
 app.use('/books', bookRouter);
+app.use('/admin', adminRouter);
 
 bookRouter.route('/single')
   .get((req, res) => {

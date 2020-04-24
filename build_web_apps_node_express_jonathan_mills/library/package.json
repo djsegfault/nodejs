@@ -5,11 +5,11 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "DEBUG=app nodemon app.js",
-    "startonce": "DEBUG=app node app.js",
+    "start": "DEBUG=app,app:* nodemon app.js",
+    "startonce": "DEBUG=app,app:* node app.js",
     "lint": "eslint app.js",
     "lintfix": "eslint app.js --fix",
-    "mysqltest":"DEBUG=* node mysqltest.js"
+    "mysqltest": "DEBUG=* node mysqltest.js"
   },
   "author": "David Kramer",
   "license": "ISC",
@@ -20,6 +20,7 @@
     "ejs": "3.0.2",
     "express": "^4.17.1",
     "jquery": "3.5.0",
+    "mongodb": "3.5.6",
     "morgan": "1.10.0",
     "mysql": "2.18.1",
     "nodemon": "2.0.3",

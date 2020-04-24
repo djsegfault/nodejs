@@ -1,8 +1,9 @@
 const express = require('express');
-const sql = require('mysql');
+const debug = require('debug')('app:bookRoutes');
+const { MongoClient, ObjectID } = require('mongodb'); // "destructuring": same as const mongoClient = require('mongodb').MongoClient;
 const bookRouter = express.Router();
 
-function router(nav, sqlConfig) {
+function router(nav, mongoConfig) {
     var books = [];
 
 
@@ -11,132 +12,67 @@ function router(nav, sqlConfig) {
         console.log(`Nav Link: ${navLink.link}:${navLink.title}`)
     });
 
-    /* 
-           console.log("Static books");
-           books = [
-               {
-                   title: 'War and Peace',
-                   genre: 'Historical Fiction',
-                   author: 'Lev Nikolayevich Tolstoy',
-                   read: false
-               },
-               {
-                   title: 'Les Misérables',
-                   genre: 'Historical Fiction',
-                   author: 'Victor Hugo',
-                   read: false
-               },
-               {
-                   title: 'The Time Machine',
-                   genre: 'Science Fiction',
-                   author: 'H. G. Wells',
-                   read: false
-               },
-               {
-                   title: 'A Journey into the Center of the Earth',
-                   genre: 'Science Fiction',
-                   author: 'Jules Verne',
-                   read: false
-               },
-               {
-                   title: 'The Dark World',
-                   genre: 'Fantasy',
-                   author: 'Henry Kuttner',
-                   read: false
-               },
-               {
-                   title: 'The Wind in the Willows',
-                   genre: 'Fantasy',
-                   author: 'Kenneth Grahame',
-                   read: false
-               },
-               {
-                   title: 'Life On The Mississippi',
-                   genre: 'History',
-                   author: 'Mark Twain',
-                   read: false
-               },
-               {
-                   title: 'Childhood',
-                   genre: 'Biography',
-                   author: 'Lev Nikolayevich Tolstoy',
-                   read: false
-               }];
-       
-    */
-
     // Setting up routes
     bookRouter.route('/')
         .get((req, res) => {
-            const sqlConnection = sql.createConnection(sqlConfig);
-            sqlConnection.query('select id, title, author from books order by id', (error, results, fields) => {
-                if (error) {
-                    return console.error(`Error ${error} querying database`);
-                }
-                console.log(`There are ${results.length} books`);
-                results.forEach(row => {
-                    books[row.id] = {
-                        title: row.title,
-                        author: row.author
-                    };                    
-                });
+            debug("Loading books");
+            (async function mongo() {
+                let client;
+                (async function mongo() {
+                    let client;
+                    try {
+                        client = await MongoClient.connect(mongoConfig.url);
+                        debug('Connected correctly to the MongoDB server');
+                        const db = client.db(mongoConfig.database);
+                        const collection = await db.collection('books');
+                        const books = await collection.find().toArray();
 
-                sqlConnection.end((error) => {
-                    if (error) {
-                        return console.error(`Error ${error} disconnecting to database`);
+                        res.render('bookListView', {
+                            title: "David's Library",
+                            nav,
+                            books, // books is a shorthand for books: books (send the object books with a key of books)
+                        });
+                    } catch (error) {
+                        console.log(error.stack);
                     }
-                    console.log("Disconnected from the database");
+                    client.close();
 
-                });
+                }());
 
-                res.render('bookListView', {
-                    title: "David's Library",
-                    nav,
-                    books, // books is a shorthand for books: books (send the object books with a key of books)
-                });
-            });
-
+            }());
         });
+
 
     bookRouter.route('/:id')
         .get((req, res) => {
             const { id } = req.params; // Pull the id property out of req.params
-            console.log(`looking for ${id}`);
-            var book = {};
+            console.log(`looking for  book ${id}`);
 
-            const sqlConnection = sql.createConnection(sqlConfig);
-            sqlConnection.query('select id, title, author from books where id=?',[parseInt(id, 10)], (error, results, fields) => {
-                if (error) {
-                    return console.error(`Error ${error} querying database`);
-                }
+            (async function mongo() {
+                let client;
+                (async function mongo() {
+                    let client;
+                    try {
+                        client = await MongoClient.connect(mongoConfig.url);
+                        debug('Connected correctly to the MongoDB server');
+                        const db = client.db(mongoConfig.database);
+                        const collection = await db.collection('books');
+                        const book = await collection.findOne({ _id: new ObjectID(id) });
+                        debug(book);
 
-                if (results.length < 1) {
-                    console.error(`book ${id} not found`);
-                    // Handle this better
-                    return;
-                }
-
-                book = {
-                    id: results[0].id,
-                    title: results[0].title,
-                    author: results[0].author
-                };
-                    console.log(book);
-
-                sqlConnection.end((error) => {
-                    if (error) {
-                        return console.error(`Error ${error} disconnecting to database`);
+                        res.render('bookView', {
+                            title: "David's Library",
+                            nav,
+                            book
+                        });
+                    } catch (error) {
+                        console.log(error.stack);
                     }
-                    console.log("Disconnected from the database")
-                });
+                    client.close();
 
-                res.render('bookView', {
-                    title: "David's Library",
-                    nav,
-                    book
-                });
-            });
+                }());
 
+            }());
 
         });
 
