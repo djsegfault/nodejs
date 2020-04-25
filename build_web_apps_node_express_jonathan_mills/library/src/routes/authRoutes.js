@@ -4,17 +4,40 @@ const { MongoClient } = require('mongodb'); // "destructuring": same as const mo
 
 const authRouter = express.Router();
 
+const mongoConfig = require('../config/db/mongoConfig.js');
+
 function router() {
     authRouter.route('/signUp')
         .post((req, res) => {
-            console.log("signUp router");
-            debug(req.body);
+            const { username, password } = req.body;
+            const userToAdd = { username, password };
 
-            // Create the user (log them in), redirect to their profile page
-            // After this, req will have a user object
-            req.login(req.body, () => {
-                res.redirect('/auth/profile');
-            });
+            (async function addUser() {
+                let client;
+                try {
+                    client = await MongoClient.connect(mongoConfig.url);
+                    debug('Connected correctly to the MongoDB server');
+                    const db = client.db(mongoConfig.database);
+                    // results will be a huge structure.  the operations (the added record) will be
+                    // the one and only element of the ops array, which is an object with the username,
+                    // the password, and the _id
+                    const results = await db.collection('users').insertOne(userToAdd);
+                    debug(results);
+
+                    // Create the user (log them in), redirect to their profile page
+                    // After this, req will have a user object
+                    req.login(results.ops[0], () => {
+                        res.redirect('/auth/profile');
+                    });
+
+                } catch (error) {
+                    console.log(error.stack);
+                }
+                client.close();
+
+            }());
+
+
             
         });
     

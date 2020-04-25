@@ -58,12 +58,14 @@ function router(nav, mongoConfig) {
     adminRouter.route('/')
         .get((req, res) => {
             debug("Inserting books");
-            (async function mongo() {
+            (async function insertBooks() {
                 let client;
                 try {
+                    const mongoConfig = require('../config/db/mongoConfig.js');
                     client = await MongoClient.connect(mongoConfig.url);
                     debug('Connected correctly to the MongoDB server');
                     const db = client.db(mongoConfig.database);
+                    db.collection('books').deleteMany
                     const response = await db.collection('books').insertMany(books);
 
                     res.json(response);
