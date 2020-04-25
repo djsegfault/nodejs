@@ -4,10 +4,10 @@ const chalk = require('chalk');
 const debug = require('debug')('app');
 const morgan = require('morgan');
 const path = require('path');
-const sql = require('mysql');
-
-
-
+const bodyParser = require('body-parser');
+const passport = require('passport');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
 
 // Globals
 const port = process.env.PORT || 3000;
@@ -27,12 +27,23 @@ const mongoConfig = {
   database: 'libraryApp',
 };
 
-
+// Router globals
 const bookRouter = require('./src/routes/bookRoutes')(nav, mongoConfig);
 const adminRouter = require('./src/routes/adminRoutes')(nav, mongoConfig);
+const authRouter = require('./src/routes/authRoutes')(nav, mongoConfig);
 
 // Set up Morgan for access logging
-app.use(morgan('combined'));
+app.use(morgan('tiny'));
+
+// Set up body parser for POST.  This will copy the POST into the body as JSON
+// bodyParser.json() is middleware which is why we call it like a function. it will call next().
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// Set up sessions and cookie parser for authentication
+app.use(cookieParser());
+app.use(session({ secret: 'secretForHashingCookiesCanBeAnything' }));
+require('./src/config/passportConfig.js')(app);
 
 // Set up Express, serving js and css from the public/ folder.
 app.use(express.static(path.join(__dirname, 'public')));
@@ -50,12 +61,7 @@ app.use('/js', express.static(path.join(__dirname, 'node_modules', 'jquery', 'di
 // Set up routes
 app.use('/books', bookRouter);
 app.use('/admin', adminRouter);
-
-bookRouter.route('/single')
-  .get((req, res) => {
-    res.send('Hello single book');
-  });
-app.use('/books', bookRouter);
+app.use('/auth', authRouter);
 
 // Route for / to index.html
 /* app.get('/', function (req, res) {
