@@ -3,7 +3,9 @@ const debug = require('debug')('app:bookRoutes');
 const { MongoClient, ObjectID } = require('mongodb'); // "destructuring": same as const mongoClient = require('mongodb').MongoClient;
 const bookRouter = express.Router();
 
-function router(nav, mongoConfig) {
+const mongoConfig = require('../config/db/mongoConfig.js');
+
+function router(nav) {
     var books = [];
 
 

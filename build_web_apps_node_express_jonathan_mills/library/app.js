@@ -22,15 +22,11 @@ const sqlConfig = {
   password: 'nodejs',
   database: 'PSLibrary'
 };
-const mongoConfig = {
-  url: 'mongodb://localhost:27017',
-  database: 'libraryApp',
-};
 
 // Router globals
-const bookRouter = require('./src/routes/bookRoutes')(nav, mongoConfig);
-const adminRouter = require('./src/routes/adminRoutes')(nav, mongoConfig);
-const authRouter = require('./src/routes/authRoutes')(nav, mongoConfig);
+const bookRouter = require('./src/routes/bookRoutes')(nav);
+const adminRouter = require('./src/routes/adminRoutes')(nav);
+const authRouter = require('./src/routes/authRoutes')(nav);
 
 // Set up Morgan for access logging
 app.use(morgan('tiny'));
