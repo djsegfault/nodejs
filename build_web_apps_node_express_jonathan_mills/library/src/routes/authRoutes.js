@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 const debug = require('debug')('app:authRoutes');
 const { MongoClient } = require('mongodb'); // "destructuring": same as const mongoClient = require('mongodb').MongoClient;
 
@@ -6,7 +7,7 @@ const authRouter = express.Router();
 
 const mongoConfig = require('../config/db/mongoConfig.js');
 
-function router() {
+function router(nav) {
     authRouter.route('/signUp')
         .post((req, res) => {
             const { username, password } = req.body;
@@ -40,6 +41,18 @@ function router() {
 
             
         });
+    
+    authRouter.route('/signIn')
+        .get((req, res) => {
+            res.render('signInView', {
+                nav,
+                title: 'Sign in'
+            });
+        })
+        .post(passport.authenticate('local', {
+            successRedirect: '/auth/profile',
+            failureRedirect: '/'
+        }));
     
     authRouter.route('/profile')
         .get((req, res) => {

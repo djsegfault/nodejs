@@ -9,7 +9,9 @@
     "startonce": "DEBUG=app,app:* node app.js",
     "lint": "eslint app.js",
     "lintfix": "eslint app.js --fix",
-    "mysqltest": "DEBUG=* node mysqltest.js"
+    "mysqltest": "DEBUG=* node mysqltest.js",
+    "dump_books": "echo -e 'use libraryApp\ndb.books.find().pretty()' | mongo",
+    "dump_users": "echo -e 'use libraryApp\ndb.users.find().pretty()' | mongo"
   },
   "author": "David Kramer",
   "license": "ISC",

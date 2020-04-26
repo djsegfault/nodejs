@@ -1,5 +1,5 @@
 const passport = require('passport');
-require('./strategies/local.strategy');
+require('./strategies/local.strategy')();
 
 // Note we're doing this one by creating the function and exporting it 
 // instead of doing two separate lines like the routes just because
