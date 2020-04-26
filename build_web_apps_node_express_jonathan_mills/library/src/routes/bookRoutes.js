@@ -6,12 +6,18 @@ const bookRouter = express.Router();
 const mongoConfig = require('../config/db/mongoConfig.js');
 
 function router(nav) {
-    var books = [];
 
 
-    console.log(`Nav is '${nav.length}' long`);
-    nav.forEach(navLink => {
-        console.log(`Nav Link: ${navLink.link}:${navLink.title}`)
+    // Middleware to check for user object in body added by passport
+    // Next will continue processing, or redirect to / if missing
+    bookRouter.use((req, res, next) => {
+        if (req.user) {
+            debug("User object found by bookRoutes, OK");
+            next();
+        } else {
+            debug("User object NOT found by bookRoutes, redirecting to /");
+            res.redirect('/');
+        }
     });
 
     // Setting up routes

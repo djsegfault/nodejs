@@ -55,6 +55,17 @@ function router(nav) {
         }));
     
     authRouter.route('/profile')
+        .all((req, res, next) => {
+            // This will get called regardless of the HTTP method
+            // It's middleware, so it needs the next callback on success
+            if (req.user) {
+                debug("User object found by profile, OK");
+                next();
+            } else {
+                debug("User object NOT found by profile, redirecting to /");
+                res.redirect('/');
+            }
+        })
         .get((req, res) => {
             // Dump the user that passport added to the request
             res.json(req.user);
